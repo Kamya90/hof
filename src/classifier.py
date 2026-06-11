@@ -1,11 +1,10 @@
 import os
 import json
 from dotenv import load_dotenv
-#from groq import Groq
-import gemini from Gemini
+from groq import Groq
 
 load_dotenv()
-client = Gemini(api_key=os.getenv("GEMINI_API_KEY"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 CLASSIFIER_PROMPT = """
 You are a news classifier for HOF, a debate platform for Indians aged 16-25.
