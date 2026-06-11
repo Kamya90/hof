@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOF — News That Makes You Think</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #F7F5F0; --bg2: #EFECE5; --ink: #0E0D0B; --ink2: #2C2B28;
+  --muted: #8C8880; --pink: #D4005A; --pink-pale: #FAE8F0;
+  --border: #DDD9D0; --white: #FDFCFA;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+
+.ticker-wrap { background: var(--ink); overflow: hidden; padding: 7px 0; }
+.ticker { display: flex; gap: 64px; animation: ticker 35s linear infinite; white-space: nowrap; width: max-content; }
+.ticker span { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.ticker span::before { content: '— '; color: var(--pink); }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+nav { display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 64px; border-bottom: 1px solid var(--border); background: var(--white); position: sticky; top: 0; z-index: 100; }
+.logo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 28px; color: var(--ink); }
+.nav-links { display: flex; list-style: none; }
+.nav-links a { display: block; padding: 0 20px; font-size: 13px; font-weight: 400; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-decoration: none; height: 64px; line-height: 64px; border-right: 1px solid var(--border); transition: color 0.2s; }
+.nav-links li:first-child a { border-left: 1px solid var(--border); }
+.nav-links a:hover { color: var(--ink); }
+.nav-links a.active { color: var(--pink); }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+.nav-cta { background: var(--ink); color: var(--white); border: none; padding: 9px 22px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+.nav-cta:hover { background: var(--pink); }
+
+.hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; border-bottom: 1px solid var(--border); }
+.hero-left { padding: 72px 56px; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--border); }
+.hero-tag { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--pink); margin-bottom: 32px; }
+.hero-headline { font-family: 'Playfair Display', serif; font-size: clamp(52px, 6vw, 80px); font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 32px; flex: 1; }
+.hero-headline em { font-style: italic; color: var(--pink); }
+.hero-sub { font-size: 16px; font-weight: 300; color: var(--muted); line-height: 1.8; max-width: 380px; margin-bottom: 40px; }
+.btn-solid { background: var(--ink); color: var(--white); border: 1px solid var(--ink); padding: 12px 28px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.btn-solid:hover { background: var(--pink); border-color: var(--pink); }
+.hero-right { background: var(--bg2); padding: 48px; display: flex; flex-direction: column; gap: 24px; justify-content: center; }
+.hero-right-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.feature-story { cursor: pointer; transition: opacity 0.2s; }
+.feature-story:hover { opacity: 0.75; }
+.feature-story .cat { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--pink); margin-bottom: 8px; }
+.feature-story h2 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; line-height: 1.25; margin-bottom: 10px; }
+.feature-story p { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.7; }
+.score-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.score-pip { width: 8px; height: 8px; background: var(--pink); border-radius: 50%; animation: pulseDot 2s ease-in-out infinite; }
+@keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.score-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+.score-val { color: var(--ink); font-weight: 500; }
+
+.rule { display: flex; align-items: center; gap: 20px; padding: 0 48px; height: 48px; border-bottom: 1px solid var(--border); background: var(--white); }
+.rule-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.rule-line { flex: 1; height: 1px; background: var(--border); }
+.rule-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--border); }
+
+.debate-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--border); }
+.debate-card { padding: 36px 32px; border-right: 1px solid var(--border); cursor: pointer; transition: background 0.25s; display: flex; flex-direction: column; }
+.debate-card:nth-child(3n) { border-right: none; }
+.debate-card:hover { background: var(--white); }
+.card-num { font-family: 'Playfair Display', serif; font-style: italic; font-size: 40px; color: var(--border); line-height: 1; margin-bottom: 20px; transition: color 0.25s; }
+.debate-card:hover .card-num { color: var(--pink); }
+.card-cat { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.debate-card h3 { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 500; line-height: 1.35; margin-bottom: 20px; flex: 1; }
+.sides { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; padding: 16px; background: var(--bg2); }
+.side-row { display: flex; gap: 10px; font-size: 12px; line-height: 1.55; color: var(--muted); }
+.side-lbl { font-family: 'DM Mono', monospace; font-size: 10px; flex-shrink: 0; margin-top: 2px; color: var(--ink2); }
+.card-footer { display: flex; gap: 8px; }
+.vote-btn { flex: 1; padding: 9px 8px; border: 1px solid var(--border); background: transparent; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.vote-btn:hover { border-color: var(--ink); color: var(--ink); }
+.vote-btn.think:hover { border-color: var(--pink); color: var(--pink); }
+.vote-btn.voted { border-color: var(--pink); color: var(--pink); }
+
+.skeleton { background: linear-gradient(90deg, var(--bg2) 25%, var(--border) 50%, var(--bg2) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 2px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skel-h { height: 20px; margin-bottom: 12px; }
+.skel-l { height: 13px; margin-bottom: 8px; }
+.skel-l.s { width: 40%; }
+.skel-l.m { width: 70%; }
+
+.empty-state { padding: 80px 48px; text-align: center; color: var(--muted); grid-column: 1 / -1; }
+.empty-state h4 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 10px; color: var(--ink); }
+.empty-state p { font-size: 14px; line-height: 1.7; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(14,13,11,0.7); backdrop-filter: blur(6px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--white); max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; scrollbar-width: thin; }
+@keyframes modalIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.modal-top { height: 3px; background: var(--pink); }
+.modal-header { padding: 36px 40px 28px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+.modal-cat { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--pink); margin-bottom: 12px; }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; line-height: 1.25; }
+.modal-close { background: none; border: 1px solid var(--border); color: var(--muted); width: 36px; height: 36px; font-size: 16px; cursor: pointer; flex-shrink: 0; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.modal-close:hover { border-color: var(--ink); color: var(--ink); }
+.modal-body { padding: 40px; }
+.frame-block { margin-bottom: 32px; }
+.frame-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.frame-text { font-size: 15px; font-weight: 300; line-height: 1.85; color: var(--ink2); }
+.tension-line { font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic; font-weight: 500; color: var(--ink); line-height: 1.4; padding: 20px 0; }
+.tension-line span { color: var(--pink); }
+.two-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+.side-block { padding: 20px; background: var(--bg2); border-top: 2px solid; }
+.side-block.a { border-color: var(--ink); }
+.side-block.b { border-color: var(--pink); }
+.side-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; color: var(--muted); }
+.side-block p { font-size: 13px; font-weight: 300; color: var(--ink2); line-height: 1.7; }
+.open-q { background: var(--ink); color: var(--white); padding: 28px 32px; margin-top: 32px; }
+.open-q-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--pink); margin-bottom: 12px; }
+.open-q p { font-family: 'Playfair Display', serif; font-size: 18px; font-style: italic; line-height: 1.6; }
+.modal-actions { display: flex; gap: 10px; padding: 24px 40px; border-top: 1px solid var(--border); }
+.modal-btn { flex: 1; padding: 12px; border: 1px solid var(--border); background: transparent; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; color: var(--muted); transition: all 0.2s; }
+.modal-btn:hover { border-color: var(--ink); color: var(--ink); }
+.modal-btn.think:hover { border-color: var(--pink); color: var(--pink); background: var(--pink-pale); }
+.modal-btn.voted { border-color: var(--pink); color: var(--pink); }
+
+footer { padding: 64px 48px 40px; border-top: 1px solid var(--border); background: var(--white); }
+.footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 64px; margin-bottom: 48px; }
+.footer-logo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 36px; margin-bottom: 12px; }
+.footer-desc { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.8; max-width: 280px; }
+.footer-col h5 { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.footer-col ul a { font-size: 14px; font-weight: 300; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-col ul a:hover { color: var(--ink); }
+.footer-bottom { padding-top: 28px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; }
+.footer-bottom p { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--border); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <span>Loading today's debates</span>
+    <span>HOF — News That Makes You Think</span>
+    <span>Loading today's debates</span>
+    <span>HOF — News That Makes You Think</span>
+  </div>
+</div>
+
+<nav>
+  <div class="logo">HOF</div>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Debate</a></li>
+    <li><a href="#">Tweets</a></li>
+    <li><a href="#">Inventions</a></li>
+    <li><a href="#">Brands</a></li>
+    <li><a href="#">Laws</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-date" id="nav-date"></span>
+    <button class="nav-cta">Form Your View</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div>
+      <div class="hero-tag">India's Debate Engine — 16+ — No Fluff</div>
+      <h1 class="hero-headline">News that makes you <em>argue</em> with yourself first.</h1>
+      <p class="hero-sub">Every story filtered by an AI trained to find debate — then framed with both sides, so you can form a real position instead of just forwarding a screenshot.</p>
+    </div>
+    <div>
+      <button class="btn-solid" id="hero-cta">Read Today's Debate</button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-label">Today's Top Signal</div>
+    <div id="hero-stories">
+      <div class="feature-story">
+        <div class="skel-l s skeleton" style="margin-bottom:10px"></div>
+        <div class="skel-h skeleton"></div>
+        <div class="skel-l m skeleton"></div>
+        <div class="skel-l skeleton"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rule">
+  <span class="rule-label">Today's Debates</span>
+  <div class="rule-line"></div>
+  <span class="rule-count" id="story-count">Loading...</span>
+</div>
+
+<div class="debate-grid" id="debate-grid">
+  <div class="debate-card">
+    <div class="skel-h skeleton" style="width:60px;margin-bottom:20px"></div>
+    <div class="skel-l s skeleton" style="margin-bottom:12px"></div>
+    <div class="skel-h skeleton"></div>
+    <div class="skel-h skeleton"></div>
+  </div>
+  <div class="debate-card">
+    <div class="skel-h skeleton" style="width:60px;margin-bottom:20px"></div>
+    <div class="skel-l s skeleton" style="margin-bottom:12px"></div>
+    <div class="skel-h skeleton"></div>
+    <div class="skel-h skeleton"></div>
+  </div>
+  <div class="debate-card">
+    <div class="skel-h skeleton" style="width:60px;margin-bottom:20px"></div>
+    <div class="skel-l s skeleton" style="margin-bottom:12px"></div>
+    <div class="skel-h skeleton"></div>
+    <div class="skel-h skeleton"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">HOF</div>
+      <p class="footer-desc">News filtered for people who want to argue better, not louder. India-first. 16+. No conclusions drawn for you.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Columns</h5>
+      <ul>
+        <li><a href="#">Main Debate</a></li>
+        <li><a href="#">Tweets That Made Sense</a></li>
+        <li><a href="#">Gen Z Inventions</a></li>
+        <li><a href="#">Brands in Spotlight</a></li>
+        <li><a href="#">Laws That Affect You</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>About HOF</h5>
+      <ul>
+        <li><a href="#">How We Filter</a></li>
+        <li><a href="#">Our Scoring System</a></li>
+        <li><a href="#">Submit a Story</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>2026 HOF. Made for minds that aren't done forming yet.</p>
+    <p>Every story filtered. Every side represented. No conclusions drawn for you.</p>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-top"></div>
+    <div class="modal-header">
+      <div>
+        <div class="modal-cat" id="modal-cat"></div>
+        <div class="modal-title" id="modal-title"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">X</button>
+    </div>
+    <div class="modal-body">
+      <div class="frame-block">
+        <div class="frame-label">What Happened</div>
+        <p class="frame-text" id="modal-what"></p>
+      </div>
+      <div class="frame-block">
+        <div class="frame-label">Why It Matters Structurally</div>
+        <p class="frame-text" id="modal-why"></p>
+      </div>
+      <div class="frame-block">
+        <div class="frame-label">The Core Tension</div>
+        <div class="tension-line" id="modal-tension"></div>
+      </div>
+      <div class="frame-block">
+        <div class="frame-label">Two Sides</div>
+        <div class="two-sides">
+          <div class="side-block a">
+            <div class="side-title">For</div>
+            <p id="modal-side-a"></p>
+          </div>
+          <div class="side-block b">
+            <div class="side-title">Against</div>
+            <p id="modal-side-b"></p>
+          </div>
+        </div>
+      </div>
+      <div class="frame-block">
+        <div class="frame-label">Why You Specifically Should Have a Position</div>
+        <p class="frame-text" id="modal-you"></p>
+      </div>
+      <div class="open-q">
+        <div class="open-q-label">The Question You Should Sit With</div>
+        <p id="modal-question"></p>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn think" id="btn-think" onclick="castVote('think')">Made Me Think</button>
+      <button class="modal-btn" id="btn-context" onclick="castVote('context')">Needs More Context</button>
+      <button class="modal-btn" onclick="shareStory()">Share</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let stories = [];
+let activeId = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('nav-date').textContent = new Date().toLocaleDateString('en-IN', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+  loadStories();
+});
+
+async function loadStories() {
+  try {
+    const res  = await fetch('/api/stories?limit=12');
+    const data = await res.json();
+    stories    = data.stories || [];
+    if (stories.length === 0) { showEmpty(); return; }
+    renderTicker(stories);
+    renderHero(stories);
+    renderGrid(stories);
+    document.getElementById('story-count').textContent = stories.length + ' stories today';
+    document.getElementById('hero-cta').onclick = () => openModal(stories[0].id);
+  } catch (e) {
+    console.error(e);
+    showEmpty();
+  }
+}
+
+function renderTicker(stories) {
+  const all  = [...stories, ...stories];
+  const html = all.map(s => '<span>' + s.title + '</span>').join('');
+  document.getElementById('ticker').innerHTML = html;
+}
+
+function renderHero(stories) {
+  const top = stories.slice(0, 2);
+  document.getElementById('hero-stories').innerHTML = top.map((s, i) => {
+    const sep = i > 0 ? 'style="border-top:1px solid var(--border);padding-top:24px;margin-top:4px"' : '';
+    return '<div class="feature-story" ' + sep + ' onclick="openModal(\'' + s.id + '\')">'
+      + '<div class="cat">' + (s.source || 'HOF') + '</div>'
+      + '<h2>' + s.title + '</h2>'
+      + '<p>' + ((s.frame && s.frame.what_happened) ? s.frame.what_happened.slice(0, 120) + '...' : '') + '</p>'
+      + '<div class="score-row"><div class="score-pip"></div>'
+      + '<span class="score-text">Debate Score <span class="score-val">' + (s.score ? s.score.toFixed(1) : '-') + ' / 50</span></span></div>'
+      + '</div>';
+  }).join('<div style="border-top:1px solid var(--border);margin:4px 0"></div>');
+}
+
+function renderGrid(stories) {
+  document.getElementById('debate-grid').innerHTML = stories.map((s, i) => {
+    const f    = s.frame || {};
+    const sideA = f.side_a ? f.side_a.slice(0, 120) + '...' : '';
+    const sideB = f.side_b ? f.side_b.slice(0, 120) + '...' : '';
+    const num   = String(i + 1).padStart(2, '0');
+    return '<div class="debate-card" style="animation:fadeUp 0.5s ease ' + (i * 0.06) + 's both;opacity:0" onclick="openModal(\'' + s.id + '\')">'
+      + '<div class="card-num">' + num + '</div>'
+      + '<div class="card-cat">' + (s.source || 'HOF') + '</div>'
+      + '<h3>' + s.title + '</h3>'
+      + '<div class="sides">'
+      + '<div class="side-row"><span class="side-lbl">A</span><span>' + sideA + '</span></div>'
+      + '<div class="side-row"><span class="side-lbl">B</span><span>' + sideB + '</span></div>'
+      + '</div>'
+      + '<div class="card-footer">'
+      + '<button class="vote-btn think" onclick="event.stopPropagation();quickVote(this,\'' + s.id + '\',\'think\')">Made Me Think</button>'
+      + '<button class="vote-btn" onclick="event.stopPropagation();quickVote(this,\'' + s.id + '\',\'context\')">More Context</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+function showEmpty() {
+  document.getElementById('debate-grid').innerHTML = '<div class="empty-state"><h4>No debates yet today</h4><p>Run the pipeline: <code style="font-family:monospace;background:var(--bg2);padding:2px 8px">python -m src.pipeline</code></p></div>';
+  document.getElementById('hero-stories').innerHTML = '<div style="color:var(--muted);font-size:14px;line-height:1.7">No stories yet. Run the pipeline to fetch today\'s debates.</div>';
+  document.getElementById('story-count').textContent = '0 stories';
+}
+
+function openModal(storyId) {
+  const s = stories.find(x => x.id === storyId);
+  if (!s) return;
+  activeId = storyId;
+  const f  = s.frame || {};
+
+  const parts   = (f.core_tension || '').split(/\s+vs\s+/i);
+  const tension = parts.length === 2 ? parts[0] + ' <span>vs</span> ' + parts[1] : (f.core_tension || '');
+
+  document.getElementById('modal-cat').textContent     = (s.source || 'HOF') + ' · Score ' + (s.score ? s.score.toFixed(1) : '-');
+  document.getElementById('modal-title').textContent   = s.title;
+  document.getElementById('modal-what').textContent    = f.what_happened  || '';
+  document.getElementById('modal-why').textContent     = f.why_it_matters || '';
+  document.getElementById('modal-tension').innerHTML   = tension;
+  document.getElementById('modal-side-a').textContent  = f.side_a         || '';
+  document.getElementById('modal-side-b').textContent  = f.side_b         || '';
+  document.getElementById('modal-you').textContent     = f.why_you        || '';
+  document.getElementById('modal-question').textContent = f.open_question || '';
+
+  ['btn-think','btn-context'].forEach(id => {
+    const b = document.getElementById(id);
+    b.classList.remove('voted');
+    b.textContent = id === 'btn-think' ? 'Made Me Think' : 'Needs More Context';
+  });
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+  activeId = null;
+}
+
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+async function castVote(type) {
+  if (!activeId) return;
+  const btnId = type === 'think' ? 'btn-think' : 'btn-context';
+  const btn   = document.getElementById(btnId);
+  const orig  = btn.textContent;
+  try {
+    await fetch('/api/votes', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({story_id: activeId, vote_type: type})
+    });
+    btn.textContent = 'Logged';
+    btn.classList.add('voted');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('voted'); }, 2000);
+  } catch(e) { console.error(e); }
+}
+
+async function quickVote(btn, storyId, type) {
+  const orig = btn.textContent;
+  try {
+    await fetch('/api/votes', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({story_id: storyId, vote_type: type})
+    });
+    btn.textContent = 'Done';
+    btn.classList.add('voted');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('voted'); }, 1500);
+  } catch(e) { console.error(e); }
+}
+
+function shareStory() {
+  const s = stories.find(x => x.id === activeId);
+  if (!s) return;
+  if (navigator.share) {
+    navigator.share({title: s.title, url: window.location.href});
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link copied');
+  }
+}
+</script>
+</body>
+</html>
