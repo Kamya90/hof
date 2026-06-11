@@ -4,13 +4,7 @@ from dotenv import load_dotenv
 from groq import Groq
 
 load_dotenv()
-
-# Check if the API key is available (it won't be during Railway's build phase)
-api_key = os.getenv("GROQ_API_KEY")
-if api_key:
-    client = Groq(api_key=api_key)
-else:
-    client = None
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 CLASSIFIER_PROMPT = """
 You are a news classifier for HOF, a debate platform for Indians aged 16-25.
@@ -23,17 +17,6 @@ Reply with exactly one word: SYSTEMIC or PERSONAL
 """
 
 def is_systemic(story: dict) -> bool:
-    global client
-    
-    # Lazy initialization: If client wasn't created at import time, 
-    # try creating it now that we are in the runtime phase.
-    if client is None:
-        api_key = os.getenv("GROQ_API_KEY")
-        if not api_key:
-            print("[classifier] Error: GROQ_API_KEY environment variable is entirely missing.")
-            return True # Fallback default
-        client = Groq(api_key=api_key)
-
     title = story.get("title", "")
     content = story.get("content", "")[:300]
     try:
